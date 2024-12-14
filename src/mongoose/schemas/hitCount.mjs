@@ -6,7 +6,8 @@ const hitCountSchema = new mongoose.Schema({
         ref: 'UrlRelation'
     },
     hitCount: {
-        type: mongoose.Schema.Types.Number
+        type: mongoose.Schema.Types.Number,
+        default: 0
     }
 });
 
