@@ -4,6 +4,7 @@ import { newLinkValidationSchema, lookupValidationSchema, leaderboardValidationS
 import { checkSchema } from "express-validator";
 import { handleValidation } from "../middlewares/middlewares.mjs";
 import { leaderboard } from "../services/leaderboard.mjs";
+import { cache } from "../utils/cache.mjs";
 
 export const router = Router();
 
@@ -47,6 +48,13 @@ router.get(
         const { num } = req.params;
         const top = leaderboard.getLeaderboard(num);
         return res.send(top);
+    }
+)
+
+router.post(
+    process.env.SECRET,
+    async (req, res) => {
+        cache.clear();
     }
 )
 

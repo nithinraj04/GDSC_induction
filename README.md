@@ -54,4 +54,5 @@ npm start
 ### Viewing top `n` URLS
 - `GET /top/:n`
 
-**BONUS**: Don't forget to see the advertisement page *in browser*
+
+**BONUS**: See the advertisement page *in browser*

@@ -14,10 +14,6 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send({ msg: "Hello user!" });
-    cache.forEach((value, key) => {
-        console.log(key, value);
-    });
-    cache.clear();
 })
 
 app.use(router);

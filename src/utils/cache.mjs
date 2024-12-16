@@ -4,6 +4,8 @@ import { HitCount } from "../mongoose/schemas/hitCount.mjs";
 const cacheOptions = {
     max: 2,
 
+    ttl: 1000 * 60 * 60 * 6,
+
     noDisposeOnSet: true,
 
     dispose: async (value, key) => {
