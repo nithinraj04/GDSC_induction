@@ -4,7 +4,7 @@ import { HitCount } from "../mongoose/schemas/hitCount.mjs";
 const cacheOptions = {
     max: 1024,
 
-    ttl: 1000 * 60 * 60 * 6,
+    ttl: 1000 * 60 * 60,
 
     noDisposeOnSet: true,
 

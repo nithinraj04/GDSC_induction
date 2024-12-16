@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import router from "./routes/routes.mjs";
-import { cache } from "./utils/cache.mjs";
+import { leaderboard, loadLeaderboardFromFile } from "./services/leaderboard.mjs";
 import 'dotenv/config';
 
 await mongoose.connect(process.env.MONGO_URI)
@@ -20,6 +20,7 @@ app.use(router);
 
 const port = process.env.PORT || 8080;
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
-})
+    loadLeaderboardFromFile('leaderboard.json');
+});

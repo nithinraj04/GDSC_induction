@@ -1,4 +1,5 @@
 import { HitCount } from "../mongoose/schemas/hitCount.mjs";
+import fs from 'fs';
 
 class Node {
     constructor(shortURL, longURL, score) {
@@ -93,3 +94,23 @@ class Leaderboard {
 }
 
 export const leaderboard = new Leaderboard();
+
+function writeLeaderboardToFile(filename) {
+    const leaderboardData = leaderboard.getLeaderboard(100);
+    fs.writeFileSync(filename, JSON.stringify(leaderboardData, null, 2), 'utf-8');
+}
+
+process.on('SIGINT', () => {
+    writeLeaderboardToFile('leaderboard.json');
+    console.log('Leaderboard saved to leaderboard.json');
+})
+
+export const loadLeaderboardFromFile = (filename) => {
+    if (fs.existsSync(filename)) {
+        const data = fs.readFileSync(filename, 'utf-8');
+        const leaderboardData = JSON.parse(data);
+        leaderboardData.forEach(element => {
+            leaderboard.insert(element.shortURL, element.longURL, element.HitCount);
+        });
+    }
+}
