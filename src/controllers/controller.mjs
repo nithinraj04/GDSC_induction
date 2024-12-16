@@ -45,7 +45,7 @@ export const retrieve = async (req, res) => {
     if(cache.has(shortURL)){
         let data = cache.get(shortURL);
         console.log("Cache hit");
-        
+        leaderboard.update(shortURL, data.longURL, data.hitCount);
         return handleRequest(req, res, shortURL, data.longURL, data.hitCount, data.dailyLimitCounter, data.nextReset);
     }
     

@@ -25,3 +25,15 @@ export const lookupValidationSchema = {
         }
     }
 }
+
+export const leaderboardValidationSchema = {
+    num: {
+        isInt: {
+            options: { min: 1, max: 100 },
+            errorMessage: 'Invalid number'
+        },
+        notEmpty: {
+            errorMessage: 'No number was provided'
+        }
+    }
+}

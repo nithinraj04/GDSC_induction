@@ -2,7 +2,7 @@ import { HitCount } from "../mongoose/schemas/hitCount.mjs";
 
 class Node {
     constructor(shortURL, longURL, score) {
-        this.shortURL = data;
+        this.shortURL = shortURL;
         this.longURL = longURL;
         this.score = score;
         this.next = null;
@@ -16,8 +16,8 @@ class Leaderboard {
         this.maxSize = 100;
     }
 
-    insert(data, score) {
-        const newNode = new Node(data, score);
+    insert(shortURL, longURL, score) {
+        const newNode = new Node(shortURL, longURL, score);
 
         if (!this.head || this.head.score < score) {
             newNode.next = this.head;
@@ -38,6 +38,29 @@ class Leaderboard {
         }
     }
 
+    update(shortURL, longURL, score) {
+        let current = this.head;
+        let prev = null;
+        while (current && current.shortURL !== shortURL) {
+            prev = current;
+            current = current.next;
+        }
+
+        if (!current) {
+            this.insert(shortURL, longURL, score);
+            return;
+        }
+            
+        let copy = current;
+        if (prev){
+            prev.next = current.next;
+        }
+        else{
+            this.head = current.next;
+        }
+        this.insert(copy.shortURL, copy.longURL, score);
+    }
+
     removeLast() {
         if (!this.head) return;
 
@@ -53,7 +76,7 @@ class Leaderboard {
         this.size--;
     }
 
-    printLeaderboard(num) {
+    getLeaderboard(num) {
         let current = this.head;
         let arr = [];
         while (current && num--) {
@@ -63,7 +86,6 @@ class Leaderboard {
                 HitCount: current.score
             });
             current = current.next;
-            position++;
         }
 
         return arr;
