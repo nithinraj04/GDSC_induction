@@ -22,6 +22,8 @@ app.get('/', (req, res) => {
 
 app.use(router);
 
-app.listen(8080 || process.env.PORT, () => {
-    console.log("Server is running on port 3000");
+const port = process.env.PORT || 8080;
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 })
