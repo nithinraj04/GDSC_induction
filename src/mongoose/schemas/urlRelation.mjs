@@ -10,6 +10,6 @@ const urlRelationSchema = new mongoose.Schema({
     }
 });
 
-urlRelationSchema.index({ shortURL: 1, unique: true });
+urlRelationSchema.index({ shortURL: 1 }, { unique: true });
 
 export const UrlRelation = mongoose.model("UrlRelation", urlRelationSchema);

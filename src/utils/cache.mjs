@@ -15,7 +15,7 @@ const cacheOptions = {
 
         const updateHitCount = await HitCount.findOneAndUpdate({ shortURL: key }, data);
 
-        console.log(data);
+        console.log(updateHitCount);
     },
 
     allowStale: false,
