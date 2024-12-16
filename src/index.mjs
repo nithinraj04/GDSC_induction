@@ -22,6 +22,6 @@ app.get('/', (req, res) => {
 
 app.use(router);
 
-app.listen(3000, () => {
+app.listen(8080 || process.env.PORT, () => {
     console.log("Server is running on port 3000");
 })

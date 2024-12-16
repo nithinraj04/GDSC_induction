@@ -23,10 +23,19 @@ router.get(
 
 router.get(
     '/advertisement',
-    (req, res) => {
+    async (req, res) => {
         const { longURL } = req.query;
-        console.log(longURL);
-        return res.send({ msg: "Advertisement", longURL });
+        const inspirobotResponse = await fetch('https://www.inspirobot.me/api?generate=true');
+        const inspirobot = await inspirobotResponse.text();
+        console.log(longURL, inspirobot);
+        return res.send(`
+            <body>
+            <h1>Advertisement</h1> 
+            <a href="${longURL}">${longURL}</a>
+            <br>
+            <img src="${inspirobot}" />
+            </body>
+        `);
     }
 )
 
