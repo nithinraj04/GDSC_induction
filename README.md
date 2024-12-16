@@ -1,5 +1,7 @@
 # URL shortener
 
+(https://chotta-url.onrender.com/)
+
 ## Project Description
 
 A simple Node.js application built using Express and Mongoose, that enables users to shorten very long URLs. This application uses a local caching solution to avoid frequent database calls. Some key features include
@@ -52,4 +54,4 @@ npm start
 ### Viewing top `n` URLS
 - `GET /top/:n`
 
-NOTE that the project will soon be deployed
+**BONUS**: Don't forget to see the advertisement page *in browser*
