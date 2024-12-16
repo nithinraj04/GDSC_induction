@@ -3,8 +3,36 @@ import { HitCount } from "../mongoose/schemas/hitCount.mjs";
 import { Router } from "express";
 import { cache } from "../utils/cache.mjs";
 import shortid from "shortid";
+import 'dotenv/config'
 
 const router = Router();
+
+const handleRequest = (req, res, shortURL, longURL, hitCount, dailyLimitCounter, nextReset) => {
+    if(nextReset <= Date.now()){
+        nextReset = Date.now() + 1000*30*30*24;
+        dailyLimitCounter = process.env.DAILY_LIMIT;
+    }
+
+    if(dailyLimitCounter <= 0){
+        return res.send({ msg: "Sorry, this link has reached maximum daily limit. Pls try again later." });
+    }
+
+    hitCount += 1;
+    dailyLimitCounter -= 1;
+
+    cache.set(shortURL, {
+        longURL,
+        hitCount,
+        dailyLimitCounter,
+        nextReset
+    });
+
+    if(hitCount % 10 === 0){
+        return res.redirect(`/advertisement?longURL=${encodeURIComponent(longURL)}`);
+    }
+
+    return res.redirect(longURL);
+}
 
 router.post(
     "/shorten",
@@ -18,7 +46,7 @@ router.post(
         });
 
         const hitCount = new HitCount({
-            shortURL: urlRelation.shortURL
+            shortURL
         });
 
         const savedURL = await urlRelation.save();
@@ -28,7 +56,14 @@ router.post(
             return res.status(500).send({ error: "Error saving URL" });
         }
 
-        cache.set(shortURL, { longURL: longURL, hitCount: 0 });
+        cache.set(shortURL, {
+            longURL,
+            hitCount: savedHitCount.hitCount,
+            dailyLimitCounter: savedHitCount.dailyLimitCounter,
+            nextReset: savedHitCount.nextReset
+        });
+
+        console.log(cache.get(shortURL));
 
         res.send(urlRelation);
     }
@@ -40,35 +75,25 @@ router.get(
         const { shortURL } = req.params;
 
         if(cache.has(shortURL)){
-            const { longURL, hitCount } = cache.get(shortURL);
-            cache.set(shortURL, { longURL, hitCount: hitCount + 1 });
-
-            if((hitCount+1) % 10 === 0){
-                console.log("Redirecting to advertisement after cache hit");
-                return res.redirect(`/advertisement?longURL=${encodeURIComponent(longURL)}`);
-            }
-
-            console.log("Cache hit", hitCount);
-            // console.log(hitCount+1 % 10);
-
-            return res.redirect(longURL);
+            let { longURL, hitCount, dailyLimitCounter, nextReset } = cache.get(shortURL);
+            console.log("Cache hit");
+            return handleRequest(req, res, shortURL, longURL, hitCount, dailyLimitCounter, nextReset);
         }
+        
+        console.log("Cache miss");
 
         const findLongURL = await UrlRelation.findOne({ shortURL });
-
+        
         if(!findLongURL) {
             return res.status(404).send({ error: "URL not found" });
         }
+        
+        const findHitCount = await HitCount.findOne({ shortURL });
+        
+        const { longURL } = findLongURL;
+        let { hitCount, dailyLimitCounter, nextReset } = findHitCount;
 
-        const findHitCount = await HitCount.findOneAndUpdate({ shortURL }, { $inc: { hitCount: 1 }, new: true });
-
-        cache.set(shortURL, { longURL: findLongURL.longURL, hitCount: findHitCount.hitCount });
-
-        if(findHitCount.hitCount % 10 === 0){
-            return res.redirect(`/advertisement?longURL=${encodeURIComponent(findLongURL.longURL)}`);
-        }
-
-        return res.redirect(findLongURL.longURL);
+        return handleRequest(req, res, shortURL, longURL, hitCount, dailyLimitCounter, nextReset);
     }
 )
 

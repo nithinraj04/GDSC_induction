@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const urlRelationSchema = new mongoose.Schema({
     shortURL: {
         type: mongoose.Schema.Types.String

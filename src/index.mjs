@@ -2,8 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import router from "./routes/routes.mjs";
 import { cache } from "./utils/cache.mjs";
+import 'dotenv/config';
 
-await mongoose.connect("mongodb://localhost:27017/url-shortener")
+await mongoose.connect(process.env.MONGO_URI)
               .then(() => console.log("Connected to MongoDB"))
               .catch(err => console.error(err));
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
     cache.forEach((value, key) => {
         console.log(key, value);
     });
+    cache.clear();
 })
 
 app.use(router);
