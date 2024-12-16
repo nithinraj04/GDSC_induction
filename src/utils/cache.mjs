@@ -2,7 +2,7 @@ import { LRUCache } from "lru-cache";
 import { HitCount } from "../mongoose/schemas/hitCount.mjs";
 
 const cacheOptions = {
-    max: 2,
+    max: 1024,
 
     ttl: 1000 * 60 * 60 * 6,
 
