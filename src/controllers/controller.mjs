@@ -4,33 +4,8 @@ import { UrlRelation } from "../mongoose/schemas/urlRelation.mjs";
 import { cache } from "../utils/cache.mjs";
 import shortid from "shortid";
 import 'dotenv/config';
-
-const handleRequest = (req, res, ...data) => {
-    let [ shortURL, longURL, hitCount, dailyLimitCounter, nextReset ] = data;
-    if(nextReset <= Date.now()){
-        nextReset = Date.now() + 1000 * 60 * 60 * 24;
-        dailyLimitCounter = process.env.DAILY_LIMIT;
-    }
-
-    hitCount += 1;
-    dailyLimitCounter = Math.max(0, dailyLimitCounter - 1);
-    
-    cache.set(shortURL, {
-        longURL,
-        hitCount,
-        dailyLimitCounter,
-        nextReset
-    });
-
-    if(dailyLimitCounter <= 0){
-        return res.send({ msg: "Sorry, this link has reached maximum daily limit. Pls try again later." });
-    }
-
-    if(hitCount % 10 === 0){
-        return res.redirect(`/advertisement?longURL=${encodeURIComponent(longURL)}`);
-    }
-    return res.redirect(longURL);
-}
+import { handleRequest } from "./requestHandler.mjs";
+import { leaderboard } from "../services/leaderboard.mjs";
 
 export const create = async (req, res) => {
     const { longURL } = matchedData(req);
@@ -66,12 +41,11 @@ export const create = async (req, res) => {
 
 export const retrieve = async (req, res) => {
     const { shortURL } = matchedData(req);
-    console.log(shortURL);
 
     if(cache.has(shortURL)){
         let data = cache.get(shortURL);
         console.log("Cache hit");
-        console.log(data);
+        
         return handleRequest(req, res, shortURL, data.longURL, data.hitCount, data.dailyLimitCounter, data.nextReset);
     }
     
@@ -87,6 +61,13 @@ export const retrieve = async (req, res) => {
     
     const { longURL } = findLongURL;
     let { hitCount, dailyLimitCounter, nextReset } = findHitCount;
+
+    cache.set(shortURL, {
+        longURL,
+        hitCount,
+        dailyLimitCounter,
+        nextReset
+    });
 
     return handleRequest(req, res, shortURL, longURL, hitCount, dailyLimitCounter, nextReset);
 }
