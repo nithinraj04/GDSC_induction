@@ -9,9 +9,9 @@ export const handleRequest = (req, res, ...data) => {
     }
 
     hitCount += 1;
-    dailyLimitCounter = Math.max(0, dailyLimitCounter - 1);
+    dailyLimitCounter = Math.max(-1, dailyLimitCounter - 1);
     
-    if(dailyLimitCounter <= 0){
+    if(dailyLimitCounter < 0){
         return res.send({ msg: "Sorry, this link has reached maximum daily limit. Pls try again later." });
     }
 

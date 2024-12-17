@@ -103,11 +103,13 @@ function writeLeaderboardToFile(filename) {
 process.on('SIGINT', () => {
     writeLeaderboardToFile('leaderboard.json');
     console.log('Leaderboard saved to leaderboard.json');
+    process.exit();
 })
 
 export const loadLeaderboardFromFile = (filename) => {
     if (fs.existsSync(filename)) {
         const data = fs.readFileSync(filename, 'utf-8');
+        if(!data) return;
         const leaderboardData = JSON.parse(data);
         leaderboardData.forEach(element => {
             leaderboard.insert(element.shortURL, element.longURL, element.HitCount);
