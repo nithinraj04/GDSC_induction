@@ -3,3 +3,5 @@ node_modules/
 redis.conf
 requests.rest
 .env
+.dockerenv
+leaderboard.json

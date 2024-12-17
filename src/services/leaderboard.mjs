@@ -1,5 +1,6 @@
-import { HitCount } from "../mongoose/schemas/hitCount.mjs";
+import { cache } from '../utils/cache.mjs';
 import fs from 'fs';
+import 'dotenv/config';
 
 class Node {
     constructor(shortURL, longURL, score) {
@@ -100,11 +101,11 @@ function writeLeaderboardToFile(filename) {
     fs.writeFileSync(filename, JSON.stringify(leaderboardData, null, 2), 'utf-8');
 }
 
-process.on('SIGINT', () => {
+process.on(process.env.EXIT_SIGNAL, () => {
     writeLeaderboardToFile('leaderboard.json');
     console.log('Leaderboard saved to leaderboard.json');
-    process.exit();
-})
+    process.exit(0);
+});
 
 export const loadLeaderboardFromFile = (filename) => {
     if (fs.existsSync(filename)) {

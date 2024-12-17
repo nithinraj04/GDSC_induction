@@ -51,10 +51,13 @@ router.get(
     }
 )
 
+const secret = process.env.SECRET || "/jabajaba";
+
 router.post(
-    process.env.SECRET,
+    secret,
     async (req, res) => {
         cache.clear();
+        req.status(200).send({ msg: "OK" });
     }
 )
 

@@ -1,6 +1,6 @@
 # URL shortener
 
-(https://chotta-url.onrender.com/)
+(http://shorturl.bvdfb8h6g3cxeyhk.centralindia.azurecontainer.io/)
 
 ## Project Description
 
