@@ -12,7 +12,7 @@ A simple Node.js application built using Express and Mongoose, that enables user
 
 - **DB cache**: An LRU cache has been implemented between the application and database to limit the number of database call, which in turn improves the performance of the application
 
-- **Leaderboard**: Top 100 URLs (based on hit count) will be stored locally and can the statistics will be available for access.
+- **Leaderboard**: Top 100 URLs (based on hit count) will be stored locally and the statistics will be available for access.
 
 
 ## Usage
@@ -31,8 +31,15 @@ This project depends on some environment variables. If you are running this proj
 ``` bash
 MONGODB_URI=
 DAILY_LIMIT=
+PORT=
+EXIT_SIGNAL=
+SECRET=
 ```
 Daily limit is the number of daily access requests that can be made to each shortURL
+
+On local devices, set `EXIT_CODE=SIGNINT` and on hosting platforms, set `EXIT_CODE=SIGTERM`
+
+Set secret to be a string of form `/some_string`
 
 ### Running the server
 
@@ -54,5 +61,5 @@ npm start
 ### Viewing top `n` URLS
 - `GET /top/:n`
 
-
+<br>
 **BONUS**: See the advertisement page *in browser*
