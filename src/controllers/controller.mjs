@@ -62,12 +62,7 @@ export const retrieve = async (req, res) => {
     const { longURL } = findLongURL;
     let { hitCount, dailyLimitCounter, nextReset } = findHitCount;
 
-    cache.set(shortURL, {
-        longURL,
-        hitCount,
-        dailyLimitCounter,
-        nextReset
-    });
+    console.log(hitCount);
 
     return handleRequest(req, res, shortURL, longURL, hitCount, dailyLimitCounter, nextReset);
 }

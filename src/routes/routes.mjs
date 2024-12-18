@@ -57,7 +57,7 @@ router.post(
     secret,
     async (req, res) => {
         cache.clear();
-        req.status(200).send({ msg: "OK" });
+        res.status(200).send({ msg: "OK" });
     }
 )
 

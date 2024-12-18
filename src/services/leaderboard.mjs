@@ -96,21 +96,21 @@ class Leaderboard {
 
 export const leaderboard = new Leaderboard();
 
-function writeLeaderboardToFile(filename) {
+async function writeLeaderboardToFile(filename) {
     const leaderboardData = leaderboard.getLeaderboard(100);
-    fs.writeFileSync(filename, JSON.stringify(leaderboardData, null, 2), 'utf-8');
+    await fs.promises.writeFile(filename, JSON.stringify(leaderboardData, null, 2), 'utf-8');
 }
 
-process.on(process.env.EXIT_SIGNAL, () => {
-    writeLeaderboardToFile('leaderboard.json');
+process.on(process.env.EXIT_SIGNAL, async () => {
+    await writeLeaderboardToFile('leaderboard.json');
     console.log('Leaderboard saved to leaderboard.json');
     process.exit(0);
 });
 
-export const loadLeaderboardFromFile = (filename) => {
+export const loadLeaderboardFromFile = async (filename) => {
     if (fs.existsSync(filename)) {
-        const data = fs.readFileSync(filename, 'utf-8');
-        if(!data) return;
+        const data = await fs.promises.readFile(filename, 'utf-8');
+        if (!data) return;
         const leaderboardData = JSON.parse(data);
         leaderboardData.forEach(element => {
             leaderboard.insert(element.shortURL, element.longURL, element.HitCount);
